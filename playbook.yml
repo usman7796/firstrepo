@@ -1,0 +1,30 @@
+---
+- name: MULTU-PLAYBOOK
+  hosts: prod
+  vars: 
+    packages:
+      - httpd
+      - nfs-utils
+      - xinetd
+  tasks:
+    - name: instlling packages 
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ packages }}"
+      notify: 
+        - create user
+
+  handlers: 
+    - name: create user 
+      user:
+        name: tom
+        state: present 
+
+    - name: starting services
+      service:
+        name: "{{ item }}"
+        state:  started
+      loop: "{{ packages }}"
+    - debug:
+        msg: THIS PARAMETER IS DEBUGGED
